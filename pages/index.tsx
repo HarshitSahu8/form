@@ -1,22 +1,13 @@
-import React from "react";
+import React, { FC } from "react";
+import Box from "@mui/material/Box";
+import { Home } from "../src/components/home";
 
-import { Header, Main, Cards, Footer } from "@components/css";
-
-const Home: React.FC = () => {
+const IHome: FC = () => {
     return (
-        <div
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                minHeight: "100vh",
-            }}
-        >
-            <Header />
-            <Main />
-            <Cards />
-            <Footer />
-        </div>
+        <Box>
+            <Home />
+        </Box>
     );
 };
 
-export default Home;
+export default IHome;
