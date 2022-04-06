@@ -122,43 +122,46 @@ const Home: FC = () => {
             alignItems="center"
             minHeight="100vh"
         >
-            <form
-                onSubmit={handleSubmit((data) => {
-                    console.log(data);
-                    return "nothing";
-                })}
-            >
+            <form>
                 <h1>Form Validation With Persistance Of Data</h1>
-                {fieldData.map(({ label, name, autoFocus, rules }, idx) => (
-                    <TextField
-                        key={`${label}_${idx}`}
-                        control={control}
-                        id="standard-basic"
-                        name={name}
-                        label={label}
-                        autoFocus={autoFocus}
-                        rules={rules}
-                        onChange={onChangeHandler}
-                    />
-                ))}
-                <TextField
-                    select
-                    fullWidth
-                    defaultValue="select"
-                    label="Gender"
-                    inputProps={register("Gender", {
-                        required: "Please enter Gender",
-                    })}
-                    error={errors.Gender}
-                    helperText={errors.gender?.message}
-                    onChange={onChangeHandler}
-                >
-                    {gender.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
+                <Box display="flex" flexDirection="column">
+                    {fieldData.map(({ label, name, autoFocus, rules }, idx) => (
+                        <TextField
+                            sx={{ margin: "2%" }}
+                            key={`${label}_${idx}`}
+                            control={control}
+                            id="standard-basic"
+                            name={name}
+                            label={label}
+                            autoFocus={autoFocus}
+                            rules={rules}
+                            onChange={onChangeHandler}
+                        />
                     ))}
-                </TextField>
+                    <Box display="flex" m="2%" justifyContent="center">
+                        <TextField
+                            select
+                            fullWidth
+                            defaultValue="select"
+                            label="Gender"
+                            inputProps={register("Gender", {
+                                required: "Please enter Gender",
+                            })}
+                            error={errors.Gender}
+                            helperText={errors.gender?.message}
+                            onChange={onChangeHandler}
+                        >
+                            {gender.map((option) => (
+                                <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                >
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Box>
+                </Box>
                 <Box display="flex" justifyContent="center">
                     <Button
                         label="Submit"
