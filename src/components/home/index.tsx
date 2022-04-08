@@ -1,17 +1,18 @@
-import React, { FC } from "react";
+import React, { FC, useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import { useForm } from "react-hook-form";
 import Input from "./Input";
 import Button from "./Button";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
-import { useState, useEffect } from "react";
+import useFormPersist from "react-hook-form-persist";
 
 const fieldData = [
     {
         label: "First Name",
         name: "firstName",
         autoFocus: true,
+        defaultValue: "",
         rules: {
             required: {
                 value: true,
@@ -23,6 +24,7 @@ const fieldData = [
         label: "Middle Name",
         name: "middleName",
         autoFocus: false,
+        defaultValue: "",
         rules: {
             required: {
                 value: false,
@@ -34,6 +36,7 @@ const fieldData = [
         label: "Last Name",
         name: "lastName",
         autoFocus: false,
+        defaultValue: "",
         rules: {
             required: {
                 value: true,
@@ -45,6 +48,7 @@ const fieldData = [
         label: "Email",
         name: "email",
         autoFocus: false,
+        defaultValue: "",
         rules: {
             required: {
                 value: true,
@@ -60,8 +64,9 @@ const fieldData = [
         label: "Phone Number",
         name: "PhoneNo",
         autoFocus: false,
+        defaultValue: "",
         rules: {
-            validate: (value) => {
+            validate: (value: unknown) => {
                 if (value.length < 10 || isNaN(value)) {
                     return "Please Provide Valid Phone Number";
                 }
@@ -87,34 +92,10 @@ const gender = [
 ];
 
 const Home: FC = () => {
-    const [initialState, setinitialState] = useState({});
-    useEffect(() => {
-        const data = localStorage.getItem("data");
-        if (data) {
-            setinitialState(JSON.parse(data));
-        }
-    }, []);
-    useEffect(() => {
-        localStorage.setItem("data", JSON.stringify(initialState));
-        console.log(initialState);
-    });
-    const onChangeHandler = (e) => {
-        console.log("hel");
-        const value = e.target.value;
-        setinitialState({
-            ...initialState,
-            user: {
-                ...initialState.user,
-                [e.target.name]: value,
-            },
-        });
-    };
-    const { handleSubmit, control, register, formState } = useForm({
-        defaultValue: {
-            Gender: gender[0].value,
-        },
-    });
+    const { handleSubmit, control, register, formState, watch, setValue } =
+        useForm();
     const { errors } = formState;
+    useFormPersist("form", { watch, setValue });
     return (
         <Box
             display="flex"
@@ -122,20 +103,21 @@ const Home: FC = () => {
             alignItems="center"
             minHeight="100vh"
         >
-            <form>
+            <form
+                onSubmit={handleSubmit((data) => {
+                    console.log(data);
+                })}
+            >
                 <h1>Form Validation With Persistance Of Data</h1>
                 <Box display="flex" flexDirection="column">
                     {fieldData.map(({ label, name, autoFocus, rules }, idx) => (
-                        <TextField
-                            sx={{ margin: "2%" }}
+                        <Input
                             key={`${label}_${idx}`}
                             control={control}
-                            id="standard-basic"
                             name={name}
                             label={label}
                             autoFocus={autoFocus}
                             rules={rules}
-                            onChange={onChangeHandler}
                         />
                     ))}
                     <Box display="flex" m="2%" justifyContent="center">
@@ -143,13 +125,12 @@ const Home: FC = () => {
                             select
                             fullWidth
                             defaultValue="select"
-                            label="Gender"
-                            inputProps={register("Gender", {
+                            label="gender"
+                            inputProps={register("gender", {
                                 required: "Please enter Gender",
                             })}
-                            error={errors.Gender}
+                            error={errors.gender}
                             helperText={errors.gender?.message}
-                            onChange={onChangeHandler}
                         >
                             {gender.map((option) => (
                                 <MenuItem
@@ -163,11 +144,7 @@ const Home: FC = () => {
                     </Box>
                 </Box>
                 <Box display="flex" justifyContent="center">
-                    <Button
-                        label="Submit"
-                        type="submit"
-                        onclick={handleSubmit}
-                    />
+                    <Button label="Submit" type="submit" />
                 </Box>
             </form>
         </Box>
